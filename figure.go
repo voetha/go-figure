@@ -12,20 +12,21 @@ const last_ascii = '~'
 
 type figure struct {
   phrase string
-  font
+  font   Font
   strict bool
 }
 
 func NewFigure(phrase, fontName string, strict bool) figure {
-  font := newFont(fontName)
-  if font.reverse {
-    phrase = reverse(phrase)
-  }
-  return figure{phrase, font, strict}
+  font := NewFont(fontName)
+  return NewFigureWithFont(phrase, font, strict)
 }
 
-func NewFigureWithFont(phrase string, reader io.Reader, strict bool) figure {
-  font := newFontFromReader(reader)
+func NewFigureWithReader(phrase string, reader io.Reader, strict bool) figure {
+  font := NewFontFromReader(reader)
+  return NewFigureWithFont(phrase, font, strict)
+}
+
+func NewFigureWithFont(phrase string, font Font, strict bool) figure {
   if font.reverse {
     phrase = reverse(phrase)
   }

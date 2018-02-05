@@ -8,7 +8,7 @@ import (
 
 const defaultFont = "standard"
 
-type font struct {
+type Font struct {
   name string
   height int
   baseline int
@@ -17,7 +17,7 @@ type font struct {
   letters [][]string
 }
 
-func newFont(name string) (font font) {
+func NewFont(name string) (font Font) {
   font.setName(name)
   file := getFile(font.name)
   defer file.Close()
@@ -27,19 +27,19 @@ func newFont(name string) (font font) {
   return font
 }
 
-func newFontFromReader(reader io.Reader) (font font) {
+func NewFontFromReader(reader io.Reader) (font Font) {
   scanner := bufio.NewScanner(reader)
   font.setAttributes(scanner)
   font.setLetters(scanner)
   return font
 }
 
-func (font *font) setName(name string) {
+func (font *Font) setName(name string) {
   font.name = name
   if len(name) < 1 { font.name = defaultFont }
 }
 
-func (font *font) setAttributes(scanner *bufio.Scanner) {
+func (font *Font) setAttributes(scanner *bufio.Scanner) {
   for scanner.Scan() {
     text := scanner.Text()
     if strings.HasPrefix(text, signature) {
@@ -52,7 +52,7 @@ func (font *font) setAttributes(scanner *bufio.Scanner) {
   }
 }
 
-func (font *font) setLetters(scanner *bufio.Scanner) {
+func (font *Font) setLetters(scanner *bufio.Scanner) {
   font.letters = append(font.letters, make([]string, font.height, font.height)) //TODO: set spaces from flf
   for i := range font.letters[0] { font.letters[0][i] = "  " }                  //TODO: set spaces from flf
   letterIndex := 0
@@ -74,7 +74,7 @@ func (font *font) setLetters(scanner *bufio.Scanner) {
   }
 }
 
-func (font *font) evenLetters() {
+func (font *Font) evenLetters() {
   var longest int
   for _, letter := range font.letters {
     if len(letter) > 0 && len(letter[0]) > longest {
